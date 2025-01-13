@@ -13,7 +13,6 @@ import io.openems.edge.meter.api.SinglePhaseMeter;
 public interface OpenInverterGateway extends OpenemsComponent, EventHandler, ElectricityMeter, SinglePhaseMeter {
 
 	public enum ChannelId implements io.openems.edge.common.channel.ChannelId {
-		
 
 		/**
 		 * Slave Communication Failed Fault.
@@ -24,7 +23,7 @@ public interface OpenInverterGateway extends OpenemsComponent, EventHandler, Ele
 		 * </ul>
 		 */
 		SLAVE_COMMUNICATION_FAILED(Doc.of(Level.FAULT)); //
-		
+
 		private final Doc doc;
 
 		private ChannelId(Doc doc) {
@@ -36,6 +35,7 @@ public interface OpenInverterGateway extends OpenemsComponent, EventHandler, Ele
 			return this.doc;
 		}
 	}
+
 	/**
 	 * Gets the Channel for {@link ChannelId#SLAVE_COMMUNICATION_FAILED}.
 	 *

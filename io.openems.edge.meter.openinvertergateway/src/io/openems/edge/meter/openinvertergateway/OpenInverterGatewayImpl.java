@@ -45,32 +45,31 @@ import io.openems.edge.timedata.api.utils.CalculateEnergyFromPower;
 @EventTopics({ //
 		EdgeEventConstants.TOPIC_CYCLE_BEFORE_PROCESS_IMAGE, //
 })
-public class OpenInverterGatewayImpl extends AbstractOpenemsComponent implements OpenInverterGateway, OpenemsComponent, EventHandler, SinglePhaseMeter, ElectricityMeter, TimedataProvider {
+public class OpenInverterGatewayImpl extends AbstractOpenemsComponent implements OpenInverterGateway, OpenemsComponent,
+		EventHandler, SinglePhaseMeter, ElectricityMeter, TimedataProvider {
 
-	private final CalculateEnergyFromPower calculateProductionEnergy = new CalculateEnergyFromPower(this, ElectricityMeter.ChannelId.ACTIVE_PRODUCTION_ENERGY);
-	
+	private final CalculateEnergyFromPower calculateProductionEnergy = new CalculateEnergyFromPower(this,
+			ElectricityMeter.ChannelId.ACTIVE_PRODUCTION_ENERGY);
+
 	private final Logger log = LoggerFactory.getLogger(OpenInverterGatewayImpl.class);
-	
+
 	private MeterType meterType = null;
 	private SinglePhase phase = null;
 	private String baseUrl;
-	
+
 	@Reference(policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY, cardinality = ReferenceCardinality.OPTIONAL)
 	private volatile Timedata timedata;
-	
+
 	@Reference(cardinality = ReferenceCardinality.MANDATORY)
 	private BridgeHttpFactory httpBridgeFactory;
 	private BridgeHttp httpBridge;
 
-	
-	
 	public OpenInverterGatewayImpl() {
 		super(//
 				OpenemsComponent.ChannelId.values(), //
 				OpenInverterGateway.ChannelId.values(), //
-				ElectricityMeter.ChannelId.values()
-		);
-		
+				ElectricityMeter.ChannelId.values());
+
 		SinglePhaseMeter.calculateSinglePhaseFromActivePower(this);
 		SinglePhaseMeter.calculateSinglePhaseFromCurrent(this);
 		SinglePhaseMeter.calculateSinglePhaseFromVoltage(this);
@@ -83,11 +82,11 @@ public class OpenInverterGatewayImpl extends AbstractOpenemsComponent implements
 		this.phase = config.phase();
 		this.baseUrl = "http://" + config.ip();
 		this.httpBridge = this.httpBridgeFactory.get();
-		
+
 		if (!this.isEnabled()) {
 			return;
 		}
-		
+
 		this.httpBridge.subscribeJsonEveryCycle(this.baseUrl + "/status", this::processHttpResult);
 	}
 
@@ -107,8 +106,7 @@ public class OpenInverterGatewayImpl extends AbstractOpenemsComponent implements
 			return;
 		}
 		switch (event.getTopic()) {
-		case EdgeEventConstants.TOPIC_CYCLE_BEFORE_PROCESS_IMAGE
-			-> this.calculateEnergy();
+		case EdgeEventConstants.TOPIC_CYCLE_BEFORE_PROCESS_IMAGE -> this.calculateEnergy();
 		}
 	}
 
@@ -120,39 +118,34 @@ public class OpenInverterGatewayImpl extends AbstractOpenemsComponent implements
 			this.calculateProductionEnergy.update(activePower);
 		}
 	}
-	
+
 	private void processHttpResult(HttpResponse<JsonElement> result, Throwable error) {
 		this._setSlaveCommunicationFailed(result == null);
-		
+
 		Integer activePower = null;
 		Integer current = null;
 		Integer voltage = null;
-		
+
 		if (error != null) {
 			this.logWarn(this.log, error.getMessage());
-		}
-		else {
+		} else {
 			try {
 				var response = getAsJsonObject(result.data());
-				
+
 				activePower = round(getAsFloat(response, "OutputPower"));
-				current = round(getAsFloat(response, "PV1InputCurrent")*1000);
-				voltage = round(getAsFloat(response, "PV1Voltage")*1000);
-				
-				
-			}
-			catch (Exception e) {
+				current = round(getAsFloat(response, "PV1InputCurrent") * 1000);
+				voltage = round(getAsFloat(response, "PV1Voltage") * 1000);
+
+			} catch (Exception e) {
 				this.logWarn(this.log, e.getMessage());
 			}
 		}
-		
+
 		this._setActivePower(activePower);
 		this._setCurrent(current);
 		this._setVoltage(voltage);
 	}
-	
-	
-	
+
 	@Override
 	public MeterType getMeterType() {
 		return this.meterType;
@@ -167,9 +160,9 @@ public class OpenInverterGatewayImpl extends AbstractOpenemsComponent implements
 	public Timedata getTimedata() {
 		return this.timedata;
 	}
-	
+
 	@Override
 	public String debugLog() {
-		return phase+": " + this.getActivePower().asString();
+		return this.phase + ": " + this.getActivePower().asString();
 	}
 }

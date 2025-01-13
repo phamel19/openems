@@ -18,7 +18,7 @@ import io.openems.edge.meter.api.SinglePhase;
 
 	@AttributeDefinition(name = "Is enabled?", description = "Is this Component enabled?")
 	boolean enabled() default true;
-	
+
 	@AttributeDefinition(name = "Phase", description = "Which Phase is this Inverter connected to?")
 	SinglePhase phase() default SinglePhase.L1;
 

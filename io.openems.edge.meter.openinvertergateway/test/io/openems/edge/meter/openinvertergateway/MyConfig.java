@@ -20,7 +20,7 @@ public class MyConfig extends AbstractComponentConfig implements Config {
 			this.id = id;
 			return this;
 		}
-		
+
 		public Builder setPhase(SinglePhase phase) {
 			this.phase = phase;
 			return this;
@@ -35,7 +35,6 @@ public class MyConfig extends AbstractComponentConfig implements Config {
 			this.type = type;
 			return this;
 		}
-
 
 		public MyConfig build() {
 			return new MyConfig(this);
@@ -67,6 +66,5 @@ public class MyConfig extends AbstractComponentConfig implements Config {
 	public String ip() {
 		return this.builder.ip;
 	}
-
 
 }

@@ -1,3 +1,9 @@
-= io.openems.edge.meter.openinvertergateway
+= OpenInverterGateway Growatt Inverter Meter
+
+This bundle implements OpenInverterGateway for Growatt Inverters as Production Meter
+
+Only Single Phase implemented so far
+
+Tested with Growatt MIC TL-X Inverter
 
 https://github.com/OpenEMS/openems/tree/develop/io.openems.edge.meter.openinvertergateway[Source Code icon:github[]]

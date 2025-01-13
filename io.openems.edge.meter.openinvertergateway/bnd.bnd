@@ -6,10 +6,12 @@ Bundle-Version: 1.0.0.${tstamp}
 -buildpath: \
 	${buildpath},\
 	io.openems.common,\
+	io.openems.edge.bridge.http,\
 	io.openems.edge.common,\
+	io.openems.edge.common,\
+	io.openems.edge.meter.api,\
 	io.openems.edge.meter.api;version=snapshot,\
-	io.openems.edge.timedata.api,\
-	io.openems.edge.bridge.http
+	io.openems.edge.timedata.api
 
 -testpath: \
 	${testpath}
